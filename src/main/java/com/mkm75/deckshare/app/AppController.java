@@ -17,6 +17,12 @@ import java.util.Base64;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+/**
+ * JavaFX GUI におけるコントローラークラスです。<br><br>
+ * 技術上AppControllerをFXAppのインナークラスにすることは可能ですが、fxmlにおけるcontroller指定はバイナリ名のため
+ * AppController$FXAppのように指定する必要があります。ただし、一部のエディタはcontroller指定を完全限定名として扱っているため、
+ * fxmlにおけるバグが発見しづらくなります。要は物好きでも無い限りインナークラスにするなってことです。
+ */
 public class AppController implements Initializable {
 
     @FXML

@@ -4,6 +4,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
+/**
+ * アルファベット及び数字のみで構成される文字列をバイト列に圧縮します。<br><br>
+ * アルファベット大文字小文字+数字で62文字になるため、割り当てた6bitが0b111110または0b111111になることはありません。
+ * そのため、3文字か4文字か分からない3byteの場合などは4文字目が0b11111?か否かで判別します。
+ */
 public class Fake64 {
     private Fake64() {}
     private static final char[] CHARS;

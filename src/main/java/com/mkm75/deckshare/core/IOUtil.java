@@ -4,6 +4,9 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * 入出力操作を行うための簡易的な関数を記載したクラスです。
+ */
 class IOUtil {
 
     private IOUtil() {}

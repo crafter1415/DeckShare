@@ -7,7 +7,6 @@ import com.mkm75.deckshare.core.DeckSerializer;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CLI {
     private static final String[] HELP_CMD;
@@ -42,7 +41,7 @@ public class CLI {
             return 1;
         }
         String action = args.remove(0);
-        DeckIO.Slot slot = null;
+        DeckIO.Slot slot;
         {
             String slotRaw = args.remove(0);
             try {

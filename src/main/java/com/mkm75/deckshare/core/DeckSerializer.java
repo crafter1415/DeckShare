@@ -13,6 +13,13 @@ import java.util.zip.GZIPOutputStream;
 import static com.mkm75.deckshare.core.IOUtil.*;
 import static com.mkm75.deckshare.core.DigestUtil.*;
 
+/**
+ * デッキのシリアライズを行います。<br><br>
+ * シリアライズではデッキのカードをデッキ内の同じカードの枚数で分け、
+ * デッキに1枚しかないカードはシリアライズされたカードを列挙、
+ * デッキに複数枚存在するカードはシリアライズされたカードとその枚数をセットで列挙します。
+ * 出来上がったコードは、必要であればgzip圧縮された後、ヘッダーが付与された状態でのSHA256が計算され、うち4byteが末尾に添えられます。
+ */
 public class DeckSerializer {
 
     private DeckSerializer() {}

@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * コンピューター上の実際にデッキが保存されているファイルに対する読み取り及び書き込みを行います。<br><br>
+ * Windowsでは %userprofile%\Appdata\LocalLow\Aineko Games\Puzzline\Save にjson形式で保存されています。
+ */
 public class DeckIO {
     public enum Slot {
         CURRENT("CustomDeckList"),
@@ -29,6 +33,7 @@ public class DeckIO {
         }
     }
     private DeckIO() {}
+    // TODO Macに対応させる
     private static final File BASEDIR = new File(System.getProperty("user.home").replace('\\', '/')+"/Appdata/LocalLow/Aineko Games/Puzzline/Save");
     public static List<String> get(Slot slot) throws IOException {
         File file = new File(BASEDIR, slot.path);

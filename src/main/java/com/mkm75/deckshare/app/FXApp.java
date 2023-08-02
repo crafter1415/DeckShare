@@ -8,6 +8,10 @@ import javafx.stage.Stage;
 
 import java.util.Objects;
 
+/**
+ * JavaFX GUIのエントリポイントです。<br><br>
+ * 実行環境にJavaFXが存在しない場合があるため、 {@code Invoker} によりJavaFXの存在を確認してから実行されます。
+ */
 public class FXApp extends Application {
 
     public static void main(String[] args) {

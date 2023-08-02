@@ -1,7 +1,14 @@
 package com.mkm75.deckshare.core;
 
-import java.util.Base64;
-
+/**
+ * カード文字列のシリアライズを行います。<br><br>
+ * カード名は基本以下の形式になっています:<br>
+ * > {@code [A-Za-z0-9]+_[OX]{3}_[OX]{3}}<br>
+ * そのため、バイト列への変換時は<br>
+ *  - カードの名称部分をBase64とみなし使われていないビットを削除する<br>
+ *  - [OX]{3}_[OX]{3} の部分をビットフラグとして1byteにまとめる<br>
+ * ことでデータ量を削減しています。<br>
+ */
 public class CardSerializer {
 
     private CardSerializer() {}
