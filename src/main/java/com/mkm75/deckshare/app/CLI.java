@@ -10,6 +10,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class CLI {
+    private static final String[] HELP_CMD;
+    static {
+        HELP_CMD = new String[] {
+                "-h", "--help", "/h", "-?", "/?"
+        };
+        Arrays.sort(HELP_CMD);
+    }
     public static void main(String[] args) {
         System.exit(main0(new ArrayList<>(Arrays.asList(args))));
     }
@@ -18,6 +25,11 @@ public class CLI {
             help();
             return -1;
         }
+        if (args.size() == 1 && 0<=Arrays.binarySearch(HELP_CMD, args.get(0))) {
+            help();
+            return 0;
+        }
+
         boolean resultOnly = false;
         if (args.get(0).equalsIgnoreCase("resultOnly")) {
             resultOnly = true;
@@ -42,6 +54,7 @@ public class CLI {
                 return 2;
             }
         }
+        //noinspection EnhancedSwitchMigration
         switch (action) {
             case "import":
                 if (args.isEmpty()) {
