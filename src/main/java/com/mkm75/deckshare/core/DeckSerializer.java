@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import static com.mkm75.deckshare.core.IOUtil.*;
 import static com.mkm75.deckshare.core.DigestUtil.*;
@@ -16,6 +18,7 @@ public class DeckSerializer {
     private DeckSerializer() {}
 
     private static final byte[] HEADER = "PZ6D".getBytes(StandardCharsets.UTF_8);
+    private static final byte[] GZIP_HEADER = "PZ6G".getBytes(StandardCharsets.UTF_8);
     public static byte[] serialize(List<String> cards) {
         if (256<cards.size()) throw new UnsupportedOperationException();
         Map<String, AtomicInteger> map = new HashMap<>();
@@ -25,7 +28,7 @@ public class DeckSerializer {
             map.get(card).getAndIncrement();
         }
         List<String> singles = new ArrayList<>();
-        Map<String, Integer> multiples = new HashMap<>();
+        Map<String, Integer> multiples = new TreeMap<>();
         for (var entry : map.entrySet()) {
             int cnt = entry.getValue().get();
             if (cnt == 1)
@@ -33,9 +36,9 @@ public class DeckSerializer {
             else
                 multiples.put(entry.getKey(), cnt);
         }
+        Collections.sort(singles);
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            baos.write(HEADER);
             baos.write(cards.size());
             baos.write(singles.size());
             for (String card : singles) {
@@ -50,9 +53,23 @@ public class DeckSerializer {
                 baos.write(raw.length);
                 baos.write(raw);
             }
-            byte[] digest = sha256(baos.toByteArray());
-            baos.write(digest, 0, 4);
-            return baos.toByteArray();
+            ByteArrayOutputStream result = new ByteArrayOutputStream();
+            {
+                ByteArrayOutputStream tmp = new ByteArrayOutputStream();
+                GZIPOutputStream gzos = new GZIPOutputStream(tmp);
+                baos.writeTo(gzos);
+                gzos.close();
+                if (tmp.size() < baos.size()) {
+                    result.write(GZIP_HEADER);
+                    tmp.writeTo(result);
+                } else {
+                    result.write(HEADER);
+                    baos.writeTo(result);
+                }
+            }
+            byte[] digest = sha256(result.toByteArray());
+            result.write(digest, 0, 4);
+            return result.toByteArray();
         } catch (IOException e) {
             throw new InternalError(e);
         }
@@ -67,8 +84,18 @@ public class DeckSerializer {
         }
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         try {
-            for (int i=0;i<4;i++)
-                if (HEADER[i] != read(bais)) throw new ClassCastException();
+            byte[] header = read(bais, new byte[4]);
+            if (Arrays.equals(header, GZIP_HEADER)) {
+                byte[] data_gz = new byte[bytes.length-8];
+                read(bais, data_gz);
+                ByteArrayInputStream tmp = new ByteArrayInputStream(data_gz);
+                GZIPInputStream gzis = new GZIPInputStream(tmp);
+                byte[] expanded = gzis.readAllBytes();
+                bais = new ByteArrayInputStream(expanded);
+            } else if (!Arrays.equals(header, HEADER)) {
+                throw new ClassCastException();
+            }
+
             int size = Byte.toUnsignedInt(read(bais));
             List<String> list = new ArrayList<>();
             int single = Byte.toUnsignedInt(read(bais));
