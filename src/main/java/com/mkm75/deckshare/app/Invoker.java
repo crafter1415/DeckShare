@@ -10,7 +10,7 @@ public class Invoker {
                 Method method = clazz.getMethod("main", String[].class);
                 method.invoke(null, (Object) args);
                 return;
-            } catch (ReflectiveOperationException ignored) {}
+            } catch (ReflectiveOperationException | LinkageError ignored) {}
         }
         CLI.main(args);
     }
