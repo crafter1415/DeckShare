@@ -36,6 +36,7 @@ public class AppController implements Initializable {
                 .map(DeckIO.Slot::toString)
                 .collect(Collectors.toCollection(FXCollections::observableArrayList));
         this.list.setItems(list);
+        this.list.getSelectionModel().selectFirst();
         text.setWrapText(true);
     }
 

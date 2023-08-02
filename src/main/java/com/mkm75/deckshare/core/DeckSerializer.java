@@ -82,6 +82,7 @@ public class DeckSerializer {
         }
     }
     public static List<String> deserialize(byte[] bytes) {
+        if (bytes.length<8) throw new ClassCastException();
         {
             byte[] tmp = Arrays.copyOf(bytes, bytes.length-4);
             byte[] digest = sha256(tmp);
