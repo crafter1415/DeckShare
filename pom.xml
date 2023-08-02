@@ -6,7 +6,7 @@
 
     <groupId>com.mkm75</groupId>
     <artifactId>DeckShare</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>DeckShare</name>
 
     <properties>
